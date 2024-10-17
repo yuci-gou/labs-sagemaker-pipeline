@@ -31,7 +31,7 @@ xgboost_estimator = Estimator(
         region=session.boto_region_name,
         version="1.5-1",  # Specify a supported XGBoost version
     ),
-    instance_type="ml.t2.medium",
+    instance_type="ml.t3.medium",
     instance_count=1,
     role=role,
     output_path=f"s3://{bucket}/{prefix}/output",
