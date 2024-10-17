@@ -44,6 +44,7 @@ xgboost_estimator.set_hyperparameters(
     objective="multi:softmax",  # Use multiclass classification
     num_class=3,  # Specify the number of classes in the dataset
     num_round=50,  # Number of boosting rounds
+    verbosity=2,  # Increase verbosity for more detailed logs
 )
 
 # Define the Training Step in the Pipeline
