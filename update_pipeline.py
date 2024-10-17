@@ -31,7 +31,7 @@ xgboost_estimator = Estimator(
         region=session.boto_region_name,
         version="1.5-1",  # Specify a supported XGBoost version
     ),
-    instance_type="ml.t3.medium",
+    instance_type="ml.m5.large",
     instance_count=1,
     role=role,
     output_path=f"s3://{bucket}/{prefix}/output",
@@ -41,8 +41,9 @@ xgboost_estimator = Estimator(
 
 # Define hyperparameters for the model (very simple parameters for a demo)
 xgboost_estimator.set_hyperparameters(
-    objective="binary:logistic",  # A simple binary classification task
-    num_round=50,  # Number of rounds for boosting
+    objective="multi:softmax",  # Use multiclass classification
+    num_class=3,  # Specify the number of classes in the dataset
+    num_round=50,  # Number of boosting rounds
 )
 
 # Define the Training Step in the Pipeline
