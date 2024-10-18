@@ -2,8 +2,10 @@ import sagemaker
 from sagemaker.inputs import TrainingInput
 from sagemaker.estimator import Estimator
 from sagemaker.workflow.steps import TrainingStep
+from sagemaker.workflow.model_step import ModelStep
 from sagemaker.workflow.pipeline import Pipeline
 from sagemaker.workflow.pipeline_context import PipelineSession
+from sagemaker.model import Model
 
 # Initialize SageMaker session
 session = sagemaker.Session()
@@ -48,10 +50,24 @@ train_step = TrainingStep(
     inputs={"train": TrainingInput(train_data_uri, content_type="csv")},
 )
 
-# 3. Define and Create the SageMaker Pipeline
+# 3. Define the Model from the trained estimator output
+model = Model(
+    image_uri=xgboost_estimator.image_uri,
+    model_data=train_step.properties.ModelArtifacts.S3ModelArtifacts,  # Dynamic reference to model artifacts
+    role=role,
+    sagemaker_session=pipeline_session,  # Using pipeline session here
+)
+
+# 4. Define the Model Registration Step using ModelStep
+register_step = ModelStep(
+    name="XGBoostModelRegisterStep",
+    step_args=model.create(),  # Register the model in SageMaker
+)
+
+# 5. Define and Create the SageMaker Pipeline with Training and Registration Steps
 pipeline = Pipeline(
-    name="SimpleXGBoostPipeline",
-    steps=[train_step],
+    name="SimpleXGBoostPipelineWithRegistration",
+    steps=[train_step, register_step],
 )
 
 # Create or update the pipeline
