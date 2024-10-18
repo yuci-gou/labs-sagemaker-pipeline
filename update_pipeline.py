@@ -58,10 +58,10 @@ model = Model(
     sagemaker_session=pipeline_session,  # Using pipeline session here
 )
 
-# 4. Define the Model Registration Step using ModelStep
+# 4. Create a SageMaker Model Entity
 register_step = ModelStep(
     name="XGBoostModelRegisterStep",
-    step_args=model.create(),  # Register the model in SageMaker
+    step_args=model.create(),
 )
 
 # 5. Define and Create the SageMaker Pipeline with Training and Registration Steps
